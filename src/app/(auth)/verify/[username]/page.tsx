@@ -27,6 +27,7 @@ export default function VerifyAccount() {
   const params = useParams<{ username: string }>();
   const form = useForm<z.infer<typeof verifySchema>>({
     resolver: zodResolver(verifySchema),
+    defaultValues: { code: '' },
   });
 
   const onSubmit = async (data: z.infer<typeof verifySchema>) => {
@@ -64,7 +65,7 @@ export default function VerifyAccount() {
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Verification Code</FormLabel>
-                  <Input {...field} />
+                  <Input {...field} value={field.value ?? ''} />
                   <FormMessage />
                 </FormItem>
               )}

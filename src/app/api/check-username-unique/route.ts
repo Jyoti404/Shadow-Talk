@@ -8,7 +8,10 @@ const UsernameQuerySchema = z.object({
   username: usernameValidation,
 });
 
+// Force this route to run on the server only (never statically rendered)
 export const dynamic = 'force-dynamic';
+export const fetchCache = 'force-no-store';
+export const runtime = 'nodejs';
 
 export async function GET(request: NextRequest) {
   await dbConnect();

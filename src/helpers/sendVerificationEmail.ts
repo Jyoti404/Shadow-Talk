@@ -8,6 +8,11 @@ export async function sendVerificationEmail(
   verifyCode: string
 ): Promise<ApiResponse> {
   try {
+    if (!process.env.SENDER_EMAIL || !process.env.SENDER_PASSWORD) {
+      console.error("Missing SENDER_EMAIL or SENDER_PASSWORD in .env");
+      return { success: false, message: "Email not configured. Add SENDER_EMAIL and SENDER_PASSWORD to .env" };
+    }
+
     const htmlContent = customerMailTemplate(username, verifyCode);
 
     await transporter.sendMail({

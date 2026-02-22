@@ -1,17 +1,35 @@
 import dbConnect from '@/lib/dbConnect';
 import UserModel from '@/model/User';
 
-export async function POST(request: Request) {
-  await dbConnect();
+export const dynamic = 'force-dynamic';
 
+export async function GET() {
+  return Response.json({ message: 'POST username and code to verify' }, { status: 200 });
+}
+
+export async function POST(request: Request) {
   try {
-    const { username, code } = await request.json();
-    const decodedUsername = decodeURIComponent(username);
-    const user = await UserModel.findOne({ username: decodedUsername });
-    if (!user) {
+    const body = await request.json().catch(() => ({}));
+    const username = body?.username;
+    const code = body?.code;
+
+    if (!username || !code) {
       return Response.json(
-        { success: false, message: 'User not found' },
-        { status: 404 }
+        { success: false, message: 'Username and code are required' },
+        { status: 400 }
+      );
+    }
+
+    await dbConnect();
+
+    const decodedUsername = decodeURIComponent(String(username)).trim();
+    const user = await UserModel.findOne({ username: decodedUsername });
+
+    if (!user) {
+      console.error('Verify code: user not found for username', decodedUsername);
+      return Response.json(
+        { success: false, message: 'User not found. Please complete sign-up first or use the correct verify link.' },
+        { status: 400 }
       );
     }
 

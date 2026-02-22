@@ -15,7 +15,7 @@ interface RootLayoutProps {
 
 export default async function RootLayout({ children }: RootLayoutProps) {
   return (
-    <html lang="en" >
+    <html lang="en" suppressHydrationWarning>
       <AuthProvider>
         <DarkModeProvider>
           <body className='bg-white text-black dark:bg-black dark:text-white'>
